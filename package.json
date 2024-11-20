@@ -3,6 +3,7 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^22.9.1",
+    "@types/puppeteer": "^5.4.7",
     "@wdio/allure-reporter": "^9.2.14",
     "@wdio/cli": "^9.2.14",
     "@wdio/dot-reporter": "^9.2.14",
@@ -12,5 +13,9 @@
   },
   "scripts": {
     "wdio": "wdio run ./wdio.conf.ts"
+  },
+  "dependencies": {
+    "puppeteer": "^23.8.0",
+    "ts-node": "^10.9.2"
   }
 }
