@@ -319,8 +319,8 @@ export const config: WebdriverIO.Config = {
 	onComplete: function (): Promise<void> {
 		const reportError = new Error('Could not generate Allure report')
 		const generation: ChildProcessWithoutNullStreams = spawn(
-			'allure',
-			['generate', 'allure-results', '--clean'],
+			'npx',
+			['allure', 'generate', 'allure-results', '--clean'],
 			{ shell: true },
 		)
 
@@ -337,7 +337,9 @@ export const config: WebdriverIO.Config = {
 				console.log('Allure report successfully generated')
 
 				// Automatically open the report after it is generated
-				const openReport = spawn('allure', ['open', 'allure-report'], { shell: true })
+				const openReport = spawn('npx', ['allure', 'open', 'allure-report'], {
+					shell: true,
+				})
 
 				openReport.on('exit', (openExitCode: number) => {
 					if (openExitCode !== 0) {
