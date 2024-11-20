@@ -294,16 +294,34 @@ export const config: WebdriverIO.Config = {
 				}
 
 				console.log('Allure report successfully generated')
-				resolve()
+
+				// Automatically open the report after it is generated
+				const openReport = spawn('allure', ['open', 'allure-report'], { shell: true })
+
+				openReport.on('exit', (openExitCode: number) => {
+					if (openExitCode !== 0) {
+						console.error('Failed to open Allure report')
+						return reject(new Error('Failed to open Allure report'))
+					}
+
+					console.log('Allure report successfully opened')
+					resolve()
+				})
+
+				openReport.on('error', (error) => {
+					console.error('Error opening Allure report:', error)
+					reject(new Error('Error opening Allure report'))
+				})
 			})
 
 			generation.on('error', (error) => {
 				clearTimeout(generationTimeout)
-				console.error('Error spawning Allure process:', error)
+				console.error('Error spawning Allure generation process:', error)
 				reject(reportError)
 			})
 		})
 	},
+
 	/**
 	 * Gets executed when a refresh happens.
 	 * @param {string} oldSessionId session ID of the old session
