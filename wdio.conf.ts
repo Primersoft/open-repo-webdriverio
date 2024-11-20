@@ -318,46 +318,32 @@ export const config: WebdriverIO.Config = {
 	 */
 	onComplete: function (): Promise<void> {
 		const reportError = new Error('Could not generate Allure report')
-		const generation: ChildProcessWithoutNullStreams = spawn(
-			'allure',
-			['generate', 'allure-results', '--clean'],
-			{ shell: true },
-		)
 
 		return new Promise((resolve, reject) => {
 			const generationTimeout = setTimeout(() => reject(reportError), 5000)
 
-			generation.on('exit', (exitCode: number) => {
+			// Spawn the allure serve command directly
+			const serveReport: ChildProcessWithoutNullStreams = spawn(
+				'allure',
+				['serve', 'allure-results'],
+				{ shell: true },
+			)
+
+			serveReport.on('exit', (exitCode: number) => {
 				clearTimeout(generationTimeout)
 
 				if (exitCode !== 0) {
+					console.error('Failed to generate and serve Allure report')
 					return reject(reportError)
 				}
 
-				console.log('Allure report successfully generated')
-
-				// Automatically open the report after it is generated
-				const openReport = spawn('allure', ['open', 'allure-report'], { shell: true })
-
-				openReport.on('exit', (openExitCode: number) => {
-					if (openExitCode !== 0) {
-						console.error('Failed to open Allure report')
-						return reject(new Error('Failed to open Allure report'))
-					}
-
-					console.log('Allure report successfully opened')
-					resolve()
-				})
-
-				openReport.on('error', (error) => {
-					console.error('Error opening Allure report:', error)
-					reject(new Error('Error opening Allure report'))
-				})
+				console.log('Allure report successfully generated and served')
+				resolve()
 			})
 
-			generation.on('error', (error) => {
+			serveReport.on('error', (error) => {
 				clearTimeout(generationTimeout)
-				console.error('Error spawning Allure generation process:', error)
+				console.error('Error spawning Allure serve process:', error)
 				reject(reportError)
 			})
 		})
