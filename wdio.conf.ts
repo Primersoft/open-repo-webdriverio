@@ -1,4 +1,5 @@
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process'
+import * as os from 'os'
 export const config: WebdriverIO.Config = {
 	//
 	// ====================
@@ -126,7 +127,47 @@ export const config: WebdriverIO.Config = {
 	// Test reporter for stdout.
 	// The only one supported by default is 'dot'
 	// see also: https://webdriver.io/docs/dot-reporter
-	reporters: ['spec', 'dot', ['allure', { outputDir: 'allure-results' }]],
+	reporters: [
+		'spec',
+		'dot',
+		[
+			'allure',
+			{
+				outputDir: 'allure-results', // Directory where Allure stores the results
+				disableWebdriverScreenshotsReporting: false, // Whether to disable automatic screenshot capturing for WebDriver
+				useCucumberStepReporter: false, // Set to true if you are using Cucumber for reporting
+				disableWebdriverStepsReporting: false, // Disable step reporting for WebDriver
+				addConsoleLogs: true, // Add console logs from WebDriverIO to the report
+				addScreenShotsToReports: true, // Capture and add screenshots to the Allure report
+				removeCapturedScreenshots: false, // Whether to remove screenshots after being added to report
+				inlineAssets: true, // Inline assets (such as images) in the report, instead of linking them
+				reportedEnvironmentVars: {
+					os_platform: os.platform(), // The platform (e.g., 'win32', 'linux')
+					os_release: os.release(), // OS release version
+					os_version: os.version(), // OS version
+					node_version: process.version, // Node.js version
+					hostname: os.hostname(), // The machine hostname
+					arch: os.arch(), // Architecture (e.g., 'x64', 'arm')
+				},
+				// If using environment variables for customizing the report
+				environment: {
+					browser: 'Chrome', // Browser used in the tests
+					browser_version: '91.0', // Version of the browser
+					selenium_version: '3.141.59', // Version of Selenium, if relevant
+				},
+				// Optional: Provide the `testcaseId` in the Allure report (if using test case management)
+				testcaseId: (test: any) => test?.test?.fullName,
+				// Option to include detailed step information (useful for debugging)
+				addStepLinks: true, // Enable step links to the screenshots (helpful when debugging failed steps)
+				// Enable logs for failed test steps
+				addTestFailuresLogs: true,
+				// Include logs from WebDriverIO's `browser` object, such as browser console logs
+				addBrowserLogs: true,
+				// Set specific Allure title for your report
+				reportTitle: 'My Allure Report',
+			},
+		],
+	],
 
 	// Options to be passed to Mocha.
 	// See the full list at http://mochajs.org/
