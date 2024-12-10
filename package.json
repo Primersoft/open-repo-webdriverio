@@ -12,10 +12,13 @@
 		"@wdio/mocha-framework": "^9.2.8",
 		"@wdio/spec-reporter": "^9.2.14",
 		"allure-commandline": "^2.32.0",
+		"c8": "^10.1.2",
 		"nyc": "^17.1.0"
 	},
 	"scripts": {
-		"test": "npx nyc wdio run ./wdio.conf.ts"
+		"test": "npx nyc wdio run ./wdio.conf.ts",
+		"test_nyc": "npx nyc wdio run ./wdio.conf.ts",
+		"test_c8": "npx c8 wdio run ./wdio.conf.ts"
 	},
 	"dependencies": {
 		"puppeteer": "^23.8.0",
