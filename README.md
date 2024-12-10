@@ -9,6 +9,7 @@
 # View Report
 
 NOTE: test will open report onComplete
+- coverage is from NYC
 
 ### Manual
 - `allure open`

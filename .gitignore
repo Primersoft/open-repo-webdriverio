@@ -2,3 +2,5 @@ node_modules
 allure-results
 allure-report
 allure-report.pdf
+.nyc_output
+coverage
